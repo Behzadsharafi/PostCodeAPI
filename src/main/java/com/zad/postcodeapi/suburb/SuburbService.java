@@ -3,6 +3,7 @@ package com.zad.postcodeapi.suburb;
 import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,17 +16,17 @@ public class SuburbService {
 	@Autowired
 	private SuburbRepository suburbRepository;
 
+	@Autowired
+	private ModelMapper modelMapper;
+
 	public List<Suburb> getAll() {
 		return this.suburbRepository.findAll();
 	}
 
 	public Suburb createSuburb(SuburbCreateDTO data) {
 
-		String name = data.getName().trim();
-		int population = data.getPopulation();
-		String postcode = data.getPostcode().trim();
-
-		Suburb newSuburb = new Suburb(name, population, postcode);
+		Suburb newSuburb= modelMapper.map(data, Suburb.class);
+		
 		Suburb created = this.suburbRepository.save(newSuburb);
 		return created;
 	}
@@ -42,6 +43,24 @@ public class SuburbService {
 			return true;
 		}
 		return false;
+	}
+
+	public Optional<Suburb> updateById(Long id, SuburbUpdateDTO data) {
+		Optional<Suburb> foundSuburb = this.getById(id);
+
+		if (foundSuburb.isPresent()) {
+			Suburb toUpdate = foundSuburb.get();
+
+			modelMapper.map(data, toUpdate);
+			Suburb updatedSuburb = this.suburbRepository.save(toUpdate);
+
+			// We turn this to an optional because the data type that we are returning is an
+			// optional. This is an optional that always exists!
+			return Optional.of(updatedSuburb);
+
+		}
+
+		return foundSuburb;
 	}
 
 }
