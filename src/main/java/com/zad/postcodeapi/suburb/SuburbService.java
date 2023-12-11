@@ -37,7 +37,7 @@ public class SuburbService {
 	}
 
 	public boolean deleteById(Long id) {
-		Optional<Suburb> foundSuburb = this.getById(id);
+		Optional<Suburb> foundSuburb = this.suburbRepository.findById(id);
 		if (foundSuburb.isPresent()) {
 			this.suburbRepository.delete(foundSuburb.get());
 			return true;
