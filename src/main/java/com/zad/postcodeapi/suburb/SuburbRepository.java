@@ -1,18 +1,15 @@
 package com.zad.postcodeapi.suburb;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+
 
 public interface SuburbRepository extends JpaRepository<Suburb, Long> {
+	// JPA auto-generates a query that matches signature with argument
+	// Find suburb by post code custom query
+	List<Suburb> findByPostcode(int postcode);
 	
-	@Query("" +
-
-            "SELECT CASE WHEN COUNT(s) > 0 THEN " +
-            "TRUE ELSE FALSE END " +
-            "FROM Suburb s " +
-            "WHERE s.name = ?1"
-    )
-
- Boolean selectExistsTitle(String name);
-
+	Optional<Suburb> findByName(String name);
 }

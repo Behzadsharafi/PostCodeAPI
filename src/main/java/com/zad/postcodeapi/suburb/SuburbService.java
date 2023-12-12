@@ -9,58 +9,44 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 
+
 @Service
 @Transactional
 public class SuburbService {
-
 	@Autowired
 	private SuburbRepository suburbRepository;
 
 	@Autowired
-	private ModelMapper modelMapper;
+	private ModelMapper mapper;
 
-	public List<Suburb> getAll() {
+	public Suburb createSuburbAndPostCode(SuburbCreateDTO data) {
+		Suburb newSuburb = mapper.map(data, Suburb.class);
+		return this.suburbRepository.save(newSuburb);
+	}
+	
+	public List<Suburb> findAllSuburbs() {
 		return this.suburbRepository.findAll();
 	}
 
-	public Suburb createSuburb(SuburbCreateDTO data) {
-
-		Suburb newSuburb= modelMapper.map(data, Suburb.class);
-		
-		Suburb created = this.suburbRepository.save(newSuburb);
-		return created;
+	public List<Suburb> findAllSuburbsByPostcode(int postcode) {
+		// Find suburb using custom method based on post code entity
+		return this.suburbRepository.findByPostcode(postcode);
 	}
 
-	public Optional<Suburb> getById(Long id) {
-		Optional<Suburb> foundSuburb = suburbRepository.findById(id);
-		return foundSuburb;
+	public Optional<Suburb> findSuburbById(Long id) {
+		return this.suburbRepository.findById(id);
+	}
+	
+	public Optional<Suburb> findSuburbByName(String name) {
+		return this.suburbRepository.findByName(name);
 	}
 
-	public boolean deleteById(Long id) {
-		Optional<Suburb> foundSuburb = this.suburbRepository.findById(id);
-		if (foundSuburb.isPresent()) {
-			this.suburbRepository.delete(foundSuburb.get());
-			return true;
-		}
-		return false;
+	public void deleteSuburb(Suburb suburb) {
+		this.suburbRepository.delete(suburb);
 	}
 
-	public Optional<Suburb> updateById(Long id, SuburbUpdateDTO data) {
-		Optional<Suburb> foundSuburb = this.getById(id);
-
-		if (foundSuburb.isPresent()) {
-			Suburb toUpdate = foundSuburb.get();
-
-			modelMapper.map(data, toUpdate);
-			Suburb updatedSuburb = this.suburbRepository.save(toUpdate);
-
-			// We turn this to an optional because the data type that we are returning is an
-			// optional. This is an optional that always exists!
-			return Optional.of(updatedSuburb);
-
-		}
-
-		return foundSuburb;
+	public Suburb updateSuburb(Suburb suburb, SuburbUpdateDTO data) {
+		mapper.map(data, suburb);
+		return this.suburbRepository.save(suburb);
 	}
-
 }
