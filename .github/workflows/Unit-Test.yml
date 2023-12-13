@@ -1,28 +1,28 @@
 name: unitTests.yml
 
 on:
-  pull_request:
   push:
-    branches:
+    branches-ignore:
       - main
+      - master
 
 jobs:
-  test:
-    name: Running Unit Tests
+  run-all-tests:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set up JDK 11
+      - name: Setup Java
         uses: actions/setup-java@v3
         with:
+          java-version: 11
           distribution: "adopt"
-          java-version: "11"
 
-      - name: Setup Maven
+      - name: Set up Maven
         uses: stCarolas/setup-maven@v4.4
+        with:
+          maven-version: 3.8.2
 
-      - name: Run Unit Tests
+      - name: All the Tests and Coverage check
         run: mvn clean install
