@@ -1,10 +1,9 @@
-name: unitTests.yml
+name: unitTest.yml
 
 on:
   push:
-    branches-ignore:
+    branches:
       - main
-      - master
 
 jobs:
   run-all-tests:
