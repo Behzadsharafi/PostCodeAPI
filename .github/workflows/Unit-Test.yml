@@ -25,3 +25,8 @@ jobs:
 
       - name: All the Tests and Coverage check
         run: mvn clean install
+
+      - name: Enable debug output
+        run: |
+          set -x
+          env
