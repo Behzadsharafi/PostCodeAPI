@@ -1,6 +1,7 @@
 package com.zad.postcodeapi.suburb;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,10 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.zad.postcodeapi.exceptions.NotFoundException;
 import com.zad.postcodeapi.postcode.Postcode;
 import com.zad.postcodeapi.postcode.PostcodeService;
-import com.zad.postcodeapi.postcode.PostcodeUtils;
+
 
 import jakarta.validation.Valid;
-
 
 @RestController
 @RequestMapping("/suburb")
@@ -28,16 +28,13 @@ public class SuburbController {
 	@Autowired
 	private SuburbService suburbService;
 	@Autowired
-	private PostcodeService postcodeServices;
-	@Autowired
-	private PostcodeUtils postcodeUtils;
+	private PostcodeService postcodeService;
+	
 
 	@PostMapping
-	// Will create both post code and suburb rows
 	public ResponseEntity<Suburb> createSuburbAndPostCode(@Valid @RequestBody SuburbCreateDTO data) {
-		// If post code row doesn't exist, create one before creating suburb
-		if (postcodeUtils.findOutDoesPostcodeExist(data.getPostcode()) == false) {
-			this.postcodeServices.createPostcode(data.getPostcode());
+		if (postcodeService.getByPostcodeNumber(data.getPostcode()).isEmpty()) {
+			this.postcodeService.createPostcode(data.getPostcode());
 		}
 		Suburb newSuburb = this.suburbService.createSuburbAndPostCode(data);
 		return new ResponseEntity<Suburb>(newSuburb, HttpStatus.CREATED);
@@ -45,44 +42,52 @@ public class SuburbController {
 
 	@GetMapping
 	public ResponseEntity<List<Suburb>> findAllSuburbs() {
-		List<Suburb> allSuburbs = this.suburbService.findAllSuburbs();
+		List<Suburb> allSuburbs = this.suburbService.getAll();
 		return new ResponseEntity<List<Suburb>>(allSuburbs, HttpStatus.OK);
 	}
 
-	@GetMapping("/find-suburb-by-{postcode}")
-	public ResponseEntity<List<Suburb>> findSuburbByPostcode(@PathVariable int postcode) {
-		Postcode foundPostcode = postcodeUtils.findPostCodeByPostCodeOrElseThrow(postcode);
-		List<Suburb> suburb = this.suburbService.findAllSuburbsByPostcode(foundPostcode.getPostcode());
+	@GetMapping("/getSuburb{postcode}")
+	public ResponseEntity<List<Suburb>> findSuburbByPostcode(@PathVariable Integer postcode) {
+		List<Suburb> suburb = this.suburbService.getAllByPostcodeNumber(postcode).orElseThrow(() -> {
+			throw new NotFoundException("Could not find any suburb with postcode: " + postcode);
+		});
+		;
 		return new ResponseEntity<List<Suburb>>(suburb, HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Suburb> findSuburbById(@PathVariable Long id) {
-		return new ResponseEntity<Suburb>(findSuburbOrThrow(id), HttpStatus.OK);
+		Optional<Suburb> found = this.suburbService.getById(id);
+		if (found.isPresent()) {
+			return new ResponseEntity<Suburb>(found.get(), HttpStatus.OK);
+		}
+		throw new NotFoundException(String.format("Post with id: %d does not exist", id));
 	}
 
 	@PatchMapping("/{id}")
 	public ResponseEntity<Suburb> updateSuburbById(@PathVariable Long id, @Valid @RequestBody SuburbUpdateDTO data) {
-		if (postcodeUtils.findOutDoesPostcodeExist(data.getPostcode()) == false) {
-			postcodeServices.createPostcode(data.getPostcode());
+		if (data.getPostcode() != null && postcodeService.getByPostcodeNumber(data.getPostcode()).isEmpty()) {
+			postcodeService.createPostcode(data.getPostcode());
 		}
-		Suburb suburb = findSuburbOrThrow(id);
-		Suburb updatedSuburb = this.suburbService.updateSuburb(suburb, data);
-		return new ResponseEntity<Suburb>(updatedSuburb, HttpStatus.OK);
+//		Suburb suburb = findSuburbById(id);
+		Optional<Suburb> updated = this.suburbService.updateSuburbById(id, data);
+		if (updated.isPresent()) {
+			return new ResponseEntity<Suburb>(updated.get(), HttpStatus.OK);
+		}
+
+		throw new NotFoundException(String.format("Suburb with id: %d does not exist, could not update", id));
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Suburb> deleteSuburb(@PathVariable Long id) {
-		Suburb suburb = findSuburbOrThrow(id);
-		this.suburbService.deleteSuburb(suburb);
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	public ResponseEntity<Suburb> deleteById(@PathVariable Long id) {
+		boolean deleted = this.suburbService.deleteById(id);
+
+		if (deleted == true) {
+			return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+		}
+
+		throw new NotFoundException(String.format("Post with id: %d does not exist, could not delete", id));
 	}
-	
-	// Private Service Functions
-	
-	public Suburb findSuburbOrThrow(Long id) {
-		return this.suburbService.findSuburbById(id).orElseThrow(() -> {
-			throw new NotFoundException("Could not find suburb of ID: " + id);
-		});
-	}
+
+
 }

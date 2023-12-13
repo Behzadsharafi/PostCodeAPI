@@ -8,66 +8,45 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity()
 public class Suburb {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	@Getter
+	private Long id;
 
 	@NotBlank
-	@Column(name = "name")
+	@Column
+	@Getter
+	@Setter
 	private String name;
 
 
-	@Column(name = "population")
-	private int population;
+	@Column
+	@Getter
+	@Setter
+	private Integer population;
 
 	
-	@Column(name = "postcode")
-	private int postcode;
+	@Column
+	@Getter
+	@Setter
+	private Integer postcode;
 
 	public Suburb() {
 	}
 
-	public Suburb(int id, String name, int population, int postcode) {
+	public Suburb(Long id, String name, Integer population, Integer postcode) {
 		super();
-		this.id = id;
 		this.name = name;
 		this.population = population;
 		this.postcode = postcode;
 	}
 
-	public int getId() {
-		return id;
-	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public int getPopulation() {
-		return population;
-	}
-
-	public void setPopulation(int population) {
-		this.population = population;
-	}
-
-	public int getPostcode() {
-		return postcode;
-	}
-
-	public void setPostcode(int postcode) {
-		this.postcode = postcode;
-	}
 }
 

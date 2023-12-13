@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 
-
 @Service
 @Transactional
 public class SuburbService {
@@ -23,30 +22,45 @@ public class SuburbService {
 		Suburb newSuburb = mapper.map(data, Suburb.class);
 		return this.suburbRepository.save(newSuburb);
 	}
-	
-	public List<Suburb> findAllSuburbs() {
+
+	public List<Suburb> getAll() {
 		return this.suburbRepository.findAll();
 	}
 
-	public List<Suburb> findAllSuburbsByPostcode(int postcode) {
-		// Find suburb using custom method based on post code entity
-		return this.suburbRepository.findByPostcode(postcode);
+	public Optional<List<Suburb>> getAllByPostcodeNumber(Integer postcode) {
+		List<Suburb> suburbs = this.suburbRepository.findByPostcode(postcode);
+		return Optional.ofNullable(suburbs.isEmpty() ? null : suburbs);
 	}
 
-	public Optional<Suburb> findSuburbById(Long id) {
+	public Optional<Suburb> getById(Long id) {
 		return this.suburbRepository.findById(id);
 	}
-	
-	public Optional<Suburb> findSuburbByName(String name) {
+
+	public Optional<Suburb> getByName(String name) {
 		return this.suburbRepository.findByName(name);
 	}
 
-	public void deleteSuburb(Suburb suburb) {
-		this.suburbRepository.delete(suburb);
+	public boolean deleteById(Long id) {
+		Optional<Suburb> foundSuburb = this.suburbRepository.findById(id);
+		if (foundSuburb.isPresent()) {
+			this.suburbRepository.delete(foundSuburb.get());
+			return true;
+		}
+
+		return false;
+
 	}
 
-	public Suburb updateSuburb(Suburb suburb, SuburbUpdateDTO data) {
-		mapper.map(data, suburb);
-		return this.suburbRepository.save(suburb);
+	public Optional<Suburb> updateSuburbById(Long id, SuburbUpdateDTO data) {
+		Optional<Suburb> foundSuburb = this.getById(id);
+		if (foundSuburb.isPresent()) {
+			Suburb toUpdate = foundSuburb.get();
+			mapper.map(data, toUpdate);
+			Suburb updatedSuburb = this.suburbRepository.save(toUpdate);
+
+			return Optional.of(updatedSuburb);
+		}
+
+		return foundSuburb;
 	}
 }

@@ -7,32 +7,24 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity()
 public class Postcode {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "postcode_id")
+	@Getter
 	private Long id;
 	
+	@Getter
+	@Setter
 	@Column(name = "postcode_number")
 	private int postcode;
 	
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long postcode_id) {
-		this.id = postcode_id;
-	}
-
-	public int getPostcode() {
-		return postcode;
-	}
-
-	public void setPostcode(int postcode) {
-		this.postcode = postcode;
-	}
+	
 
 	public Postcode() {}
 

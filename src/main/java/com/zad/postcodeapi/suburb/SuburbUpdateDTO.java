@@ -5,14 +5,16 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 
 public class SuburbUpdateDTO {
+
 	@Size(min = 1, max = 50)
 	private String name;
 
+
 	@Min(value = 10, message = "Population must be greater than or equal to 10")
-	private int population;
+	private Integer population;
 
 	@Min(value = 10, message = "Postcode must be greater than or equal to 10")
-	private int postcode;
+	private Integer postcode;
 
 	public String getName() {
 		return name;
@@ -22,19 +24,19 @@ public class SuburbUpdateDTO {
 		this.name = name;
 	}
 
-	public int getPopulation() {
+	public Integer getPopulation() {
 		return population;
 	}
 
-	public void setPopulation(int population) {
+	public void setPopulation(Integer population) {
 		this.population = population;
 	}
 
-	public int getPostcode() {
+	public Integer getPostcode() {
 		return postcode;
 	}
 
-	public void setPostcode(int postcode) {
+	public void setPostcode(Integer postcode) {
 		this.postcode = postcode;
 	}
 }

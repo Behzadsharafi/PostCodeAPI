@@ -10,10 +10,10 @@ public class SuburbCreateDTO {
 	private String name;
 	
 	@Min(10)
-	private int population;
+	private Integer population;
 
 	@Min(10)
-	private int postcode;
+	private Integer postcode;
 
 	public String getName() {
 		return name;
@@ -23,19 +23,19 @@ public class SuburbCreateDTO {
 		this.name = name;
 	}
 
-	public int getPopulation() {
+	public Integer getPopulation() {
 		return population;
 	}
 
-	public void setPopulation(int population) {
+	public void setPopulation(Integer population) {
 		this.population = population;
 	}
 
-	public int getPostcode() {
+	public Integer getPostcode() {
 		return postcode;
 	}
 
-	public void setPostcode(int postcode) {
+	public void setPostcode(Integer postcode) {
 		this.postcode = postcode;
 	}
 }
