@@ -40,7 +40,7 @@ public class Suburb {
 	public Suburb() {
 	}
 
-	public Suburb(Long id, String name, Integer population, Integer postcode) {
+	public Suburb( String name, Integer population, Integer postcode) {
 		super();
 		this.name = name;
 		this.population = population;

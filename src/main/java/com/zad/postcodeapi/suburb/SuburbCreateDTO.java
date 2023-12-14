@@ -4,38 +4,30 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 public class SuburbCreateDTO {
+
 	@NotBlank
+	@Getter
+	@Setter
 	private String name;
-	
+
 	@Min(10)
+	@Getter
+	@Setter
 	private Integer population;
 
 	@Min(10)
+	@Getter
+	@Setter
 	private Integer postcode;
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
+	public SuburbCreateDTO(String name, Integer population, Integer postcode) {
 		this.name = name;
-	}
-
-	public Integer getPopulation() {
-		return population;
-	}
-
-	public void setPopulation(Integer population) {
 		this.population = population;
-	}
-
-	public Integer getPostcode() {
-		return postcode;
-	}
-
-	public void setPostcode(Integer postcode) {
 		this.postcode = postcode;
 	}
+
 }
