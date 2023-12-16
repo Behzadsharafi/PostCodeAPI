@@ -10,8 +10,8 @@ jobs:
       mysql:
         image: mysql:8
         env:
-          MYSQL_DATABASE: db_name
-          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: postcode_api
+          MYSQL_ROOT_PASSWORD: mypass
         ports:
           - 3306:3306
     steps:
