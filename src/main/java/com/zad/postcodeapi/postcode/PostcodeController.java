@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zad.postcodeapi.exceptions.NotFoundException;
@@ -41,10 +42,10 @@ public class PostcodeController {
 		return new ResponseEntity<List<Postcode>>(allPostcodes, HttpStatus.OK);
 	}
 
-	@GetMapping("/getPostcode{suburbName}")
-	public ResponseEntity<Integer> getBySuburbName(@PathVariable String suburbName) {
-		Suburb foundSuburb = suburbService.getByName(suburbName).orElseThrow(() -> {
-			throw new NotFoundException("Could not find a suburb of name: " + suburbName);
+	@GetMapping("/postcodes")
+	public ResponseEntity<Integer> getBySuburbName(@RequestParam String suburb) {
+		Suburb foundSuburb = suburbService.getByName(suburb).orElseThrow(() -> {
+			throw new NotFoundException("Could not find a suburb of name: " + suburb);
 		});
 		return new ResponseEntity<Integer>(foundSuburb.getPostcode(), HttpStatus.OK);
 	}
