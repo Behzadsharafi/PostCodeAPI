@@ -10,7 +10,7 @@ public class WebConfig implements WebMvcConfigurer {
 	public void addCorsMappings(CorsRegistry registry) {
 
 		String[] allowedOrigins = { "http://localhost:5173/", "http://localhost:5174/", "http://localhost:5175/",
-				"http://localhost:5176/", "http://127.0.0.1:5173/", "http://127.0.0.1:5174/", "https://octopus-app-cr8az.ondigitalocean.app/", "https://tangerine-mermaid-99ad73.netlify.app/" };
+				"http://localhost:5176/", "http://127.0.0.1:5173/", "http://127.0.0.1:5174/", "https://octopus-app-cr8az.ondigitalocean.app/", "https://tangerine-mermaid-99ad73.netlify.app/", "https://postcodeapi.netlify.app/" };
 
 		registry.addMapping("/**").allowedOrigins(allowedOrigins).allowedMethods("GET", "POST", "DELETE", "PATCH")
 				.allowedHeaders("*");
